@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 export default function App() {
+
   const [loggedIn, setLoggedIn] = useState(false);
   const [pin, setPin] = useState("");
   const [cart, setCart] = useState([]);
@@ -46,7 +47,7 @@ export default function App() {
   };
 
   const subtotal = cart.reduce(
-    (sum, item) => sum + item.price * item.qty,
+    (sum, item) => sum + item.price * (item.qty || 1),
     0
   );
 
