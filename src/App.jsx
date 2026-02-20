@@ -127,27 +127,25 @@ export default function App() {
         ))}
       </div>
 
-      {/* ORDER */}
-      <div style={{ flex: 1, background: "#f7f9fb", padding: 30 }}>
-        <h2>Ben - Logged In</h2>
+      {cart.map((item, index) => (
+  <div key={index} style={{ marginBottom: 10 }}>
+    {item.name} x{item.qty} — $
+    {(item.price * item.qty).toFixed(2)}
 
-        {cart.map((item, index) => (
-          <div key={index} style={{ marginBottom: 10 }}>
-            {item.name} x{item.qty} – $
-            {(item.price * item.qty).toFixed(2)}
-            <button
-              onClick={() => removeItem(item.name)}
-              style={{
-                marginLeft: 10,
-                color: "red",
-                border: "none",
-                background: "transparent",
-              }}
-            >
-              ✕
-            </button>
-          </div>
-        ))}
+    <button
+      onClick={() => removeItem(item.name)}
+      style={{
+        marginLeft: 10,
+        color: "red",
+        border: "none",
+        background: "transparent",
+        cursor: "pointer"
+      }}
+    >
+      ✕
+    </button>
+  </div>
+))}
 
         <hr />
         <p>Subtotal: ${subtotal.toFixed(2)}</p>
