@@ -5,6 +5,7 @@ export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [pin, setPin] = useState("");
   const [cart, setCart] = useState([]);
+  const [sales, setSales] = useState([]);
 
   const correctPin = "1234"; // Change later
 
@@ -43,8 +44,21 @@ export default function App() {
   };
 
   const removeItem = (name) => {
-    setCart(cart.filter((item) => item.name !== name));
+    const processPayment = (method) => {
+  if (cart.length === 0) return;
+
+  const newSale = {
+    items: cart,
+    subtotal,
+    tax,
+    total,
+    method,
+    time: new Date().toLocaleString()
   };
+
+  setSales([...sales, newSale]);
+  setCart([]);
+};
 
   const subtotal = cart.reduce(
     (sum, item) => sum + item.price * (item.qty || 1),
@@ -101,87 +115,95 @@ export default function App() {
   }
 
   // POS SCREEN
-  return (
-    <div style={{ display: "flex", height: "100vh", fontFamily: "Arial" }}>
-      {/* MENU */}
-      <div style={{ flex: 2, padding: 30 }}>
-        <h1>Ocean POS</h1>
+return (
+  <div style={{ display: "flex", height: "100vh", fontFamily: "Arial" }}>
+    
+    {/* LEFT SIDE – MENU */}
+    <div style={{ flex: 2, padding: 30 }}>
+      <h1>Ocean POS</h1>
 
-        {menu.map((item, index) => (
-          <button
-            key={index}
-            onClick={() => addItem(item)}
-            style={{
-              width: "45%",
-              height: 100,
-              margin: 10,
-              fontSize: 18,
-              background: "#2E86FF",
-              color: "white",
-              border: "none",
-              borderRadius: 10,
-            }}
-          >
-            {item.name}
-            <br />${item.price}
-          </button>
-        ))}
-      </div>
+      {menu.map((item, index) => (
+        <button
+          key={index}
+          onClick={() => addItem(item)}
+          style={{
+            width: "45%",
+            height: 100,
+            margin: 10,
+            fontSize: 18,
+            background: "#2E86FF",
+            color: "white",
+            border: "none",
+            borderRadius: 10
+          }}
+        >
+          {item.name}
+          <br />${item.price}
+        </button>
+      ))}
+    </div>
+
+    {/* RIGHT SIDE – ORDER */}
+    <div style={{ flex: 1, background: "#ffffff", padding: 30 }}>
+      <h2>Current Order</h2>
 
       {cart.map((item, index) => (
-  <div key={index} style={{ marginBottom: 10 }}>
-    {item.name} x{item.qty} — $
-    {(item.price * item.qty).toFixed(2)}
+        <div key={index} style={{ marginBottom: 10 }}>
+          {item.name} x{item.qty} – $
+          {(item.price * item.qty).toFixed(2)}
+        </div>
+      ))}
 
-    <button
-      onClick={() => removeItem(item.name)}
-      style={{
-        marginLeft: 10,
-        color: "red",
-        border: "none",
-        background: "transparent",
-        cursor: "pointer"
-      }}
-    >
-      ✕
-    </button>
-  </div>
-))}
+      <hr />
 
-        <hr />
-        <p>Subtotal: ${subtotal.toFixed(2)}</p>
-        <p>Tax: ${tax.toFixed(2)}</p>
-        <h2>Total: ${total.toFixed(2)}</h2>
+      <p>Subtotal: ${subtotal.toFixed(2)}</p>
+      <p>Tax: ${tax.toFixed(2)}</p>
+      <h3>Total: ${total.toFixed(2)}</h3>
 
-        <button
-          style={{
-            width: "100%",
-            height: 60,
-            marginTop: 10,
-            background: "#2ecc71",
-            color: "white",
-            border: "none",
-            borderRadius: 10,
-          }}
-        >
-          CARD
-        </button>
+      <button
+        onClick={() => processPayment("Cash")}
+        style={{
+          width: "100%",
+          height: 60,
+          marginTop: 10,
+          background: "#27ae60",
+          color: "white",
+          border: "none",
+          borderRadius: 10
+        }}
+      >
+        CASH
+      </button>
 
-        <button
-          onClick={logout}
-          style={{
-            width: "100%",
-            height: 50,
-            marginTop: 10,
-            background: "#e74c3c",
-            color: "white",
-            border: "none",
-            borderRadius: 10,
-          }}
-        >
-          LOGOUT
-        </button>
-      </div>
+      <button
+        onClick={() => processPayment("Zelle")}
+        style={{
+          width: "100%",
+          height: 60,
+          marginTop: 10,
+          background: "#6c5ce7",
+          color: "white",
+          border: "none",
+          borderRadius: 10
+        }}
+      >
+        ZELLE
+      </button>
+
+      <button
+        onClick={logout}
+        style={{
+          width: "100%",
+          height: 50,
+          marginTop: 10,
+          background: "#e74c3c",
+          color: "white",
+          border: "none",
+          borderRadius: 10
+        }}
+      >
+        LOGOUT
+      </button>
     </div>
-  );
-}
+  </div>
+);
